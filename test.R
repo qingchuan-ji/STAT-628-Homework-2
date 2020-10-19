@@ -32,6 +32,8 @@ new.BMI<-BodyFat$WEIGHT*703/((BodyFat$HEIGHT)^2)
 new.ADIPOSITY<-BodyFat$ADIPOSITY
 new.diff<-BMI-ADIPOSITY
 mean(new.diff)
+#Thus, we remove 42 and 163
+BodyFat<-BodyFat[-which((BMI-BodyFat$ADIPOSITY)>3*mean(diff)),]
 
 #The future data cleaning will be removing the outliers or extreme points in simple linear model.
 
@@ -42,6 +44,7 @@ summary(lm1)
 #2. Using stepwise regression
 lm2.1<-step(lm1, direction = "both", k=2) # both.sided + AIC 
 summary(lm2.1)
+
 lm2.2<-step(lm1, direction = "forward", k=2) # forward + AIC 
 summary(lm2.2)
 lm2.3<-step(lm1, direction = "backward", k=2) # backward + AIC 
@@ -55,7 +58,7 @@ summary(lm3.2)
 
 lm3.3<-step(lm1, direction = "backward", k=log(length(BodyFat$BODYFAT))) # backward + AIC 
 summary(lm3.3)
-
+drop1(lm3.3)
 #3. Only selecting the obvious variables in the lm2 
 lm4<-lm(BODYFAT~AGE+WEIGHT+NECK+ABDOMEN+THIGH+FOREARM+WRIST,data=BodyFat)
 summary(lm4)
@@ -71,4 +74,4 @@ lm5$beta
 coef <-coef.lars(lm5,mode="step",s=12)
 coef
 
-?step
+
